@@ -1,5 +1,8 @@
 from urllib import request,parse
 from bs4 import BeautifulSoup
+from config_manager import ConfigManager
+from dbmanager import DBManager
+import datetime
 import re
 
 URL='http://mobile.my-link.it/mylink/mobile/stazione'
@@ -15,7 +18,7 @@ class Treno:
 class Crawler:
     _TEMPO_REGEX='<img[ ]+src=\"[\./a-zA-Z0-9 ]+\"\/>([a-zA-Z0-9 ]+)</div>'
     _MINUTI_REGEX='ritardo[ ]+([0-9]+)[ ]+minuti'
-    _DESTINAZIONE_REGEX='(Per|Da)[ ]+<strong>([A-Z0-9 ]+)<\/strong>'
+    _DESTINAZIONE_REGEX='(Per|Da)[ ]+<strong>([\.A-Z0-9 ]+)<\/strong>'
     _ORA_ARRIVO_REGEX='Delle ore[ ]+<strong>([0-9]+:[0-9]+)<\/strong>'
 
     def __init__(self,url,stazione):
@@ -61,13 +64,20 @@ class Crawler:
                 minuti_ritardo=0
             treni.append(Treno(direzione,dest,ora_arrivo,minuti_ritardo,b))
         return treni
-         
-def main():
-    c=Crawler(URL,'brescia')    
-    treni=c.get_treni() 
-    for t in treni:
-        print('{} {} delle ore: {} ritardo: {}'.format(t.direzione,t.destinazione,t.ora_arrivo,t.minuti_ritardo))
 
-            
-if __name__=='__main__':
-    main() 
+class Updater:
+    def __init__(self):
+        config=ConfigManager.get_instance('config')
+        self.dbman=DBManager('delays','all',conn_string=config.config['conn_string'])
+
+    def update(self,stazione):
+        c=Crawler(URL,stazione)    
+        treni=c.get_treni() 
+        now=datetime.datetime.now()
+        for t in treni:
+            res=self.dbman.collection.find_one({"direzione":t.direzione,"destinazione":t.destinazione,"ora_arrivo":t.ora_arrivo,'stazione':stazione,'year':now.year,'month':now.month,'day':now.day})
+            if res is not None:
+                self.dbman.collection.update_one({'_id':res['_id']}, {"$set":{"ritardo":t.minuti_ritardo}}, upsert=False)
+            else:
+                self.dbman.collection.insert_one({"direzione":t.direzione,"destinazione":t.destinazione,"ora_arrivo":t.ora_arrivo,'stazione':stazione,'ritardo':t.minuti_ritardo,'year':now.year,'month':now.month,'day':now.day})
+

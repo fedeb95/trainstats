@@ -2,8 +2,11 @@ from pymongo.mongo_client import MongoClient
 import pymongo
 
 class DBManager():
-    def __init__(self,db,collection,address='127.0.0.1',port=27017):
-        self.client = MongoClient(address,port)
+    def __init__(self,db,collection,address='127.0.0.1',port=27017,conn_string=None):
+        if conn_string is not None:
+            self.client=MongoClient(conn_string)
+        elif address is not None and port is not None:
+            self.client = MongoClient(address,port)
         self.db = self.client[db]
         self.collection = self.db[collection]
 
