@@ -1,7 +1,8 @@
 from updater import Updater
+import sys
 
 def main():
-    u=Updater()
+    u=Updater(sys.argv[1])
     u.update('brescia')
     u.update('milano centrale')
     

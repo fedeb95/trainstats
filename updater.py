@@ -66,8 +66,8 @@ class Crawler:
         return treni
 
 class Updater:
-    def __init__(self):
-        config=ConfigManager.get_instance('config')
+    def __init__(self,path):
+        config=ConfigManager.get_instance(path)
         self.dbman=DBManager('delays','all',conn_string=config.config['conn_string'])
 
     def update(self,stazione):
