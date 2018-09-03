@@ -34,3 +34,8 @@ def freq_ora(df):
     # non considerare il minuto di arrivo
     df['ora_arrivo']=df['ora_arrivo'].apply(lambda s: int(s.split(':')[0])) 
     return pd.crosstab(df['ora_arrivo'],columns='Rel',normalize=True).plot()
+
+# frequenze congiunte 
+def freq_cong_stazioni(df,bins,normalize=True):
+    cong=pd.crosstab(pd.cut(df['ritardo'],bins=bins),df['stazione'],normalize=normalize)
+    return cong.plot.bar()
