@@ -30,10 +30,11 @@ def scatter_ora_ritardo(df):
     return p
 
 # frequenze relative dei ritardi per ora di arrivo (senza considerare i minuti)
-def freq_ora(df):
+def freq_ora(df,normalize=True):
+    df=df.copy()
     # non considerare il minuto di arrivo
     df['ora_arrivo']=df['ora_arrivo'].apply(lambda s: int(s.split(':')[0])) 
-    return pd.crosstab(df['ora_arrivo'],columns='Rel',normalize=True).plot()
+    return pd.crosstab(df['ora_arrivo'],columns='Rel',normalize=normalize).plot()
 
 # frequenze congiunte 
 def freq_cong_stazioni(df,bins,normalize=True):
