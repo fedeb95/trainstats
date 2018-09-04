@@ -13,7 +13,7 @@ specified in the configuration file.
 For the program to work you need a configuration file with:
 ```
 {
-  "conn_string":"mongodb:<user>:<password>@<address>:<port>/<database_name>"
+  "conn_string":"mongodb://<user>:<password>@<address>:<port>/<database_name>"
 }
 ```
 
