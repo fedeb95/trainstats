@@ -13,5 +13,3 @@ RUN chmod 0644 /etc/cron.d/trains-cron
 RUN touch /var/log/cron.log
 
 CMD cron && tail -f /var/log/cron.log
-
-CMD ["python","runner.py","config"]
