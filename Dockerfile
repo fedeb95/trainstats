@@ -1,10 +1,14 @@
-FROM python:3.6-slim
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install -y software-properties-common
+
+RUN apt-get update && apt-get install -y python3.4 python3-pip
 
 WORKDIR /app
 
 ADD . /app
 
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
+RUN pip3 install --trusted-host pypi.python.org -r requirements.txt
 
 ADD crontab /etc/cron.d/trains-cron
 
