@@ -1,1 +1,1 @@
-*/4 * * * * /usr/bin/python /app/runner.py /app/config
+*/4 * * * * /usr/bin/python3 /app/runner.py /app/config
