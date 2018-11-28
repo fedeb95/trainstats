@@ -9,7 +9,7 @@ def run():
     u.update('milano centrale')
     u.update('verona porta nuova')
     print("updating...")
-    t= Timer(15,run)
+    t= Timer(240,run) #TODO specify time in config
     t.start()
 
 def main():
