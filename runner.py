@@ -1,15 +1,17 @@
 from updater import Updater
 from threading import Timer
+from config_manager import ConfigManager
 import sys
 
-u=Updater(sys.argv[1])
+path=sys.argv[1]
+u=Updater(path)
 
 def run():
-    u.update('brescia')
-    u.update('milano centrale')
-    u.update('verona porta nuova')
-    print("updating...")
-    t= Timer(240,run) #TODO specify time in config
+    config=ConfigManager.get_instance(path)
+    for station in config.config['stations']:
+        u.update(station)
+        print("updating {}".format(station))
+    t= Timer(config.config['timer'],run) #TODO specify time in config
     t.start()
 
 def main():

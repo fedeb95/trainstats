@@ -40,3 +40,23 @@ def freq_ora(df,normalize=True):
 def freq_cong_stazioni(df,bins,normalize=True):
     cong=pd.crosstab(pd.cut(df['ritardo'],bins=bins),df['stazione'],normalize=normalize)
     return cong.plot.bar()
+
+# tratta tupla ('stazione1','stazione2')
+# month mese di riferimento
+# amount minuti di ritardo da calcolare
+# conta il numero di treni con ritardo maggiore dei minuti specificati nel mese e nella tratta 
+def ritardi_mese_tratta(data,month,tratta,amount=60):
+    go=ritardi_mese_da_a(data,month,amount,tratta[0],tratta[1])>amount
+    ret=ritardi_mese_da_a(data,month,amount,tratta[1],tratta[0])>amount
+    return go.append(ret)
+    
+
+def ritardi_mese_da_a(data,month,amount,da,a):
+    da=da.lower()
+    a=a.upper()
+    data_month=data[data['month']==month]
+    per_s1=data_month[data_month['destinazione']==a]
+    per_s1=per_s1[per_s1['direzione']=='Per']
+    per_s1_da_s2=per_s1[per_s1['stazione']==da]
+    ritardi_s1_s2=per_s1_da_s2['ritardo'] 
+    return ritardi_s1_s2
