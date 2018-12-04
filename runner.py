@@ -5,8 +5,10 @@ import sys
 
 path=sys.argv[1]
 u=Updater(path)
+t=None
 
 def run():
+    global t
     config=ConfigManager.get_instance(path)
     for station in config.config['stations']:
         u.update(station)
